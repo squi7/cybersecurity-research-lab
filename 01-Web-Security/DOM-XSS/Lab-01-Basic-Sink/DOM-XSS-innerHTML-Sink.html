@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Hunting Lab - DOM XSS</title>
+    <style>
+        body { padding: 20px; background: #f4f4f4; font-family: sans-serif; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        #status-display { color: #555; font-style: italic; border-left: 4px solid #007bff; padding-left: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="greeting">Selamat Datang!</h1>
+        <hr>
+        <h3>Update Status Anda:</h3>
+        <input type="text" id="status-input" placeholder="Apa yang anda pikirkan?" style="width: 80%;">
+        <button onclick="updateStatus()">Update</button>
+
+        <p>Status saat ini:</p>
+        <div id="status-display">Belum ada status.</div>
+    </div>
+
+    <script>
+        // --- KASUS 1: Reflected DOM XSS ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let userName = urlParams.get('name');
+
+        if (userName) {
+            // Menggunakan innerHTML (Vulnerable Sink)
+            document.getElementById('greeting').innerHTML = "Halo, " + userName;
+        }
+
+        // --- KASUS 2: Stored DOM XSS via Input ---
+        function updateStatus() {
+            const input = document.getElementById('status-input').value;
+            const display = document.getElementById('status-display');
+
+            // Render ke layar
+            display.innerHTML = "Status Baru: " + input;
+            
+            // Simpan ke localStorage
+            localStorage.setItem('user_status', input);
+        }
+
+        // Memuat status saat refresh
+        window.addEventListener('load', function() {
+            const savedStatus = localStorage.getItem('user_status');
+            const display = document.getElementById('status-display');
+            if (savedStatus && display) {
+                display.innerHTML = "Status Tersimpan: " + savedStatus;
+            }
+        });
+    </script>
+</body>
+</html>
