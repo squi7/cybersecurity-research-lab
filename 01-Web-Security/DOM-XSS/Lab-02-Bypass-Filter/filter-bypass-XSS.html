@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 02 - Filter Bypass</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Verdana, Geneva, Tahoma, sans-serif;
+            padding: 40px;
+            background: #1a1a1a1a;
+            color: #e0e0e0;
+        }
+        .box { 
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #444;
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: #3d2b2b;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .danger-zone {
+            margin-top: 20px;
+            padding: 10px;
+            border-left: 4px solid #ff4757;
+            background: #3d2b2b;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Pencarian Artikel</h2>
+        <p>
+            Developer memblokir tag <code>&lt;script&gt;</code> di sini.
+        </p>
+
+        <input type="text" id="search-input" placeholder="Masukan kata kunci...">
+        <button onclick="search()">Cari</button>
+    
+
+        <div class="danger-zone">
+            Hasil pencarian untuk: <span id="search-result"></span>
+        </div>
+    </div>
+
+    <script>
+        function search() {
+            let input = document.getElementById('search-input').value;
+
+            // --- "SAT PAM" FILTER (Vulnerable) ---
+            //Developer mencoba menghapus kata <script> secara paksa
+            let filteredInput = input.replace("<script>", "");
+
+            //Output ke sink berbahaya
+            document.getElementById('search-result').innerHTML = filteredInput;
+        }
+    </script>
+</body>
+</html>
