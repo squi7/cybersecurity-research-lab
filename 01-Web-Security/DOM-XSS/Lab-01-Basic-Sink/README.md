@@ -80,4 +80,14 @@ Sebagai *bug hunter* profesional, Anda harus tahu cara memperbaikinya:
 Menggunakan `.textContent` akan membuat browser menganggap semua input sebagai teks murni, bukan kode HTML yang harus dijalankan.
 
 ---
-**Dokumentasi oleh:** *Squi7 - Cybersecurity Researcher*
+
+## 🛠️ Status Lab
+
+| Informasi | Detail |
+| :--- | :--- |
+| **Vulnerability** | DOM XSS |
+| **Difficulty** | Easy - Medium |
+| **Last Updated** | 21 April 2026 |
+| **Researcher** | Squi7 |
+
+---
