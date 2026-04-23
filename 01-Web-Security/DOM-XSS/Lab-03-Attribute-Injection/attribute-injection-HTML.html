@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atrribute Injection</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 40px;
+            background: #121212;
+            color: #fff;
+        }
+        .card {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            background: #2c2c2c;
+            border: 1px solid 3444;
+            color: white;
+        }
+        .hint{
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Setel Nama Panggilan</h2>
+        <p>Nama saat ini:</p>
+
+        <div id="target-container">
+            <input type="text" id="nickname-field" value="">
+        </div>
+
+        <p class="hint">Gunakan parameter <code>?nick=your_name</code> di URL</p>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const nick = urlParams.get('nick');
+
+        if(nick) {
+            //DEVELOPER MISTAKE: Memasukkan input kedalam atribut value secara dinamis
+            const container = document.getElementById('target-container');
+            container.innerHTML = '<input type="text" value="' + nick + '">'
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+1. Rahasia Browser: innerHTML vs <script>
+Secara default, spesifikasi HTML5 menetapkan bahwa tag <script> yang dimasukkan melalui innerHTML tidak boleh dieksekusi.
+
+Browser melakukan ini sebagai proteksi keamanan dasar. Jadi, meskipun Anda berhasil melakukan bypass filter (kata <script> muncul di elemen Inspector), browser tetap menolak untuk menjalankannya.
+
+2. Kenapa Teknik C (<img>) Tetap Berhasil?
+Berbeda dengan tag <script>, event handler seperti onerror pada tag <img> atau onload pada <body> tetap dieksekusi oleh browser saat elemen tersebut dirender ke dalam DOM.
