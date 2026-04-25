@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash-Based DOM XSS</title>
+    <style>
+        body {
+            font-family: 'segoe UI', sans-serif;
+            padding: 40px;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        #message-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #334155;
+            border-radius: 8px;
+            border-left: 4px solid #38bdf8;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Dashboard Pengguna</h2>
+        <p>Status: <span class="highlight">aktif</span></p>
+    </div>
+    <div id="message-box">
+        Memuat pesan..
+    </div>
+
+    <script>
+        function loadMessage() {
+            const hashData = decodeURIComponent(window.location.hash.substring(1));
+            const display = document.getElementById('message-box');
+
+            if(hashData) {
+                //DEVELOPER MISTAKE: Merender data dari location.has langsung ke innerHTML
+                display.innerHTML = "Selamat datang, " + hashData;
+            } else {
+                display.innerHTML = "Selamat datang, Tamu!";
+            }
+        }
+
+        //jalankan saat halaman di muat
+        window.addEventListener('load', loadMessage);
+
+        //jalankan juga saat hash berubh tanpa reload halaman
+        window.addEventListener('hashchange', loadMessage);
+    </script>
+</body>
+</html>
