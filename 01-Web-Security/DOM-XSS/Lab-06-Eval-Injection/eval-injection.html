@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06 - Eval Injection</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 40px;
+            background: #1a1c2c;
+            color: #fff;
+        }
+        .calculator {
+            background: #4b5d67;
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            box-shadow: 10px 10px 0px #322f3d;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        .result {
+            font-size: 1.5em;
+            color: #fcd34d;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>Kalkulator Pajak</h2>
+        <p>Harga Barang: <strong>1.000.000</strong></p>
+        <div class="result" id="tax-result">Menghitung...</div>
+        <p style="font-size: 0.8em; color: #d1d5db;">Hint Gunakan <code>?tax=0.1</code></p>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search)
+        const taxRate = urlParams.get('tax');
+
+        if (taxRate) {
+            try {
+                const price =1000000;
+                const calculation = "Total Pajak " + eval(price + " * " + taxRate);
+                document.getElementById('tax-result').innerHTML = calculation.toLocaleString('id-ID');
+            } catch (e) {
+                document.getElementById('tax-result').innerHTML = "Error dalam kalkulasi";
+            }
+        } else {
+            document.getElementById('tax-result').innerHTML = "Masukan paramater tax";
+        }
+    </script>
+
+</body>
+</html>

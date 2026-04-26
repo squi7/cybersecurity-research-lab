@@ -1,0 +1,67 @@
+# Daily Notes - 2026-04-26
+
+## Fokus Hari Ini
+
+Eksplorasi **JavaScript Logic Injection** melalui sink paling berbahaya: `eval()`. Mempelajari cara menyuntikkan kode ke dalam operasi matematika tanpa merusak integritas data aplikasi.
+
+---
+
+## Project / File
+
+**Lab 06 - Eval Injection**:
+
+- Simulasi kalkulator pajak otomatis berbasis parameter URL.
+- Pengujian teknik *breakout* pada fungsi eksekusi string JavaScript.
+
+---
+
+## Materi yang Dipelajari
+
+### 1. Karakteristik Sink `eval()`
+
+`eval()` adalah fungsi "sink" yang sangat kuat karena ia mengeksekusi string sebagai kode program murni. Berbeda dengan `innerHTML` yang hanya merender elemen, `eval()` memungkinkan penyerang memanipulasi variabel, mencuri data, atau mengubah alur logika program.
+
+### 2. Teknik Stealth (Ghost) Injection
+
+Mempelajari cara menyisipkan payload tanpa merusak tampilan (UI) aplikasi. Ini sangat krusial agar serangan tidak mudah disadari oleh pengguna atau sistem monitoring sederhana.
+
+- **Payload:** `?tax=0.1 + (alert(1) || 0)`
+- **Logika:** Memanfaatkan nilai balik (`return value`) dari `alert()` yang berupa `undefined`, kemudian menggunakan operator OR (`||`) untuk mengembalikan nilai `0` agar operasi matematika tetap valid.
+
+---
+
+## Pelajaran Penting
+
+1. **Eval is Evil:** Tidak ada alasan kuat untuk menggunakan `eval()` jika data berasal dari pengguna. Gunakan `Number()` atau `JSON.parse()` yang aman.
+2. **Return Value Logic:** Memahami bahwa `eval()` mengembalikan hasil dari pernyataan terakhir. Jika pernyataan terakhir kita merusak tipe data (misal: mengembalikan `undefined` ke dalam perkalian), aplikasi akan error.
+3. **Beyond alert(1):** Dalam konteks `eval()`, risiko serangan meningkat dari sekadar XSS menjadi pencurian session penuh atau *Remote Code Execution* di sisi klien.
+
+---
+
+## Kekurangan Hari Ini
+
+- Belum mencoba bypass pada aplikasi yang menggunakan `JSON.parse()` versi lama atau yang dimodifikasi.
+- Belum mengeksplorasi penggunaan `Function()` constructor sebagai alternatif `eval()`.
+
+---
+
+## Next Step Besok
+
+### Pelajari DOM Clobbering
+
+- **Target:** Aplikasi yang menggunakan variabel global untuk menyimpan konfigurasi atau data penting.
+- **Materi:** Mempelajari bagaimana elemen HTML dengan ID tertentu dapat menimpa variabel JavaScript global.
+
+---
+
+## Nilai Hari Ini
+
+- **Belajar:** 10/10 (Konsep *Stealth Injection* adalah teknik lanjut yang sangat berharga).
+- **Fokus:** 9.5/10.
+- **Eksekusi:** 10/10 (Semua skenario, termasuk perbaikan logika kalkulator, berhasil dijalankan).
+
+---
+
+## Catatan Pribadi
+
+Menguasai `eval()` injection memberikan perspektif baru bahwa keamanan bukan hanya soal "apa yang terlihat di layar", tapi juga soal "bagaimana data diproses di belakang layar". Menjaga fungsionalitas aplikasi tetap berjalan saat melakukan eksploitasi adalah tanda seorang *security researcher* yang teliti.
