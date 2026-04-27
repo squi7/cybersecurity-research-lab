@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 07 - DOM Clobbering Success</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; background: #0d1117; color: #c9d1d9; }
+        .container { border: 1px solid #30363d; padding: 20px; border-radius: 8px; background: #161b22; }
+        #status { color: #58a6ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>System Dashboard</h2>
+        
+        <div id="user-profile">
+            <a id="config"></a>
+            <a id="config" name="endpoint" href="javascript:alert('Hacked_by_Squi7_Perfectly!')"></a>
+        </div>
+        
+        <hr>
+        <p>Status Konfigurasi: <span id="status">Memuat...</span></p>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            // Kita paksa cek ke window object
+            const settings = window.config;
+
+            if (settings) {
+                // Mengambil properti endpoint dari clobbered object
+                const target = settings.endpoint; 
+
+                if (target) {
+                    const url = target.toString();
+                    document.getElementById('status').innerText = "Mengirim data ke: " + url;
+
+                    if (url.includes('javascript:')) {
+                        location.href = url;
+                    }
+                } else {
+                    document.getElementById('status').innerText = "Endpoint tidak ditemukan di dalam config!";
+                }
+            } else {
+                document.getElementById('status').innerText = "Config global tidak ditemukan!";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
