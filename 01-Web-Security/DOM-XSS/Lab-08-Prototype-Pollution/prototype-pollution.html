@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 08 - Prototype Pollution</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 40px;
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+        .container {
+            border: 1px solid #30363d;
+            padding: 20px;
+            border-radius: 8px;
+            background: #161b22;
+        }
+        #status {
+            color: #ff7b72;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>User Settings Dashboard</h2>
+        <p>status: <span id="status"">Normal Mode</span></p>
+    </div>
+
+    <SCRIpt>
+        //Fungsi merge yang rentan 
+        function transport(target, source) {
+            for (let key in source) {
+                if (key === "__proto__") {
+                    // Di sinilah letak kerentanannya !
+                    // Penyerang bisa masuk ke "DNA" objek utama
+                    Object.assign(target.__proto__, source[key]);
+                } else [
+                    target[key] = source[key],
+                ]
+            }
+        }
+
+        // Simulasi mengambil data dari URL (misal: ?theme=dark)
+        const params = new URLSearchParams(window.location.search);
+        let userConfig = {};
+
+        //Mengolah input URL ke dalam objek
+        params.forEach((value, key) => {
+            if (key.includes("[")) {
+                // Parsing sederhana untuk nested object misal: pres[theme]=dark
+                const parts = key.split(/[\[\]]/).filter(Boolean);
+                const obj = {};
+                obj[parts[1]] = value;
+                transport(userConfig, { [parts[0]]: obj });
+            }
+        });
+
+
+        // LOGIKA APLIKASI: Mengandalkan properti yang tidak didefinisikan
+        // Developer menganggap 'isAdmin' selalu undefined atau false
+        setTimeout(() => {
+            const session = {};
+            if (session.isAdmin) {
+                document.getElementById('status').innerText = "⚠️ ADMIN MODE ACTIVATED ⚠️";
+                alert("Prototype Polluted! Admin Access Granted");
+            } else {
+                console.log("Access Danied: Not an Admin")
+            }
+        }, 100)
+
+    </SCRIpt>
+    
+</body>
+</html>
