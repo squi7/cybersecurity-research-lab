@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 09 - PP to XSS</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; background: #0d1117; color: #c9d1d9; }
+        .container { border: 1px solid #30363d; padding: 20px; border-radius: 8px; background: #161b22; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>News Portal</h2>
+        <div id="content">Memuat berita...</div>
+    </div>
+
+    <script>
+        // FUNGSI RENTAN (Sama seperti Lab 08)
+        function merge(target, source) {
+            for (let key in source) {
+                if (key === "__proto__") {
+                    Object.assign(target.__proto__, source[key]);
+                } else {
+                    target[key] = source[key];
+                }
+            }
+        }
+
+        // Simulasi parsing URL ?config[properti]=nilai
+        const params = new URLSearchParams(window.location.search);
+        let appConfig = {};
+        params.forEach((v, k) => {
+            if (k.includes("[")) {
+                const parts = k.split(/[\[\]]/).filter(Boolean);
+                const obj = {}; obj[parts[1]] = v;
+                merge(appConfig, { [parts[0]]: obj });
+            }
+        });
+
+        // GADGET: Script yang seolah-olah aman
+        function renderContent() {
+            const options = {}; // Objek kosong
+            
+            // Gadget: Jika options.transportUrl ada, aplikasi memuat script dari sana.
+            // Developer lupa mendefinisikan transportUrl secara default.
+            if (options.transportUrl) {
+                const script = document.createElement('script');
+                script.src = options.transportUrl;
+                document.body.appendChild(script);
+            }
+            
+            document.getElementById('content').innerHTML = "Berita hari ini: Squi7 berhasil menembus pertahanan Prototype!";
+        }
+
+        setTimeout(renderContent, 1000);
+    </script>
+</body>
+</html>
