@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string # flask adalah framwork web
 import requests # type: ignore
 
 app = Flask(__name__)
@@ -22,16 +22,22 @@ def index():
 
 @app.route('/check-status')
 def check_status():
+    #1. Mengambil parameter 'url' dari URL browser
     target_url = request.args.get('url')
     try:
+        # 2. Server melakukan request HTTP ke URL yang diminta user
         # KERENTANAN: Sever langsung langsung melakukan request ke URL dari user tanpa validasi
         response = requests.get(target_url, timeout=5)
+
+        # 3. Menampilkan isi (teks) dari hasil request tersebut
         return f"<h3>Status Report for {target_url}:</h3><pre>{response.text}</pre>"
     except Exception as e:
+        # Jika URL salah atau mati, tampilkan pesan error
         return f"Error: {str(e)}"
 
 @app.route('/admin-secret-area')
 def admin_area():
+    # Cek: Apakah yang mengakses ini berasal dari 1P 127.0.0.1(dirinya sendiri)?
     # Hanya boleh diakses dari localhost (172.0.0.1)
     if request.remote_addr != '127.0.0.1':
         return "❌ AKSES DITOLAK: Hanya untuk admin internal!", 403
